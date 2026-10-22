@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>订单列表 · 示例后台</title>
+<link rel="stylesheet" href="../assets/prototype.css">
+</head>
+<!--
+  ═══════════════════════════════════════════════════════════
+  页面骨架说明（这是「列表页」示例，复制到 pages/ 下使用）
+  ═══════════════════════════════════════════════════════════
+  必填的审计标记（删了 audit-prototype.mjs 会报错）：
+    data-page    全站唯一标识
+    data-entity  业务实体 key，同一实体的各页面必须一致
+    data-view    index | dashboard | list | detail | create | edit
+
+  数据展示位置必须标 data-field，否则审计脚本会判定
+  「该字段无处查看」。表单输入同样要标。
+
+  所有页面都要有：面包屑回上层 + 侧边导航。
+  ═══════════════════════════════════════════════════════════
+-->
+<body data-page="order-list" data-entity="order" data-view="list">
+
+<div class="layout">
+
+  <!-- ═══ 侧边导航：所有顶层页面都在这里出现一次 ═══ -->
+  <aside class="sidebar">
+    <div class="brand"><span class="dot">P</span> 示例后台</div>
+
+    <nav>
+      <a href="../index.html">首页</a>
+
+      <div class="group-label">业务管理</div>
+      <a href="order-list.html" class="active">订单管理</a>
+      <a href="customer-list.html">客户管理</a>
+
+      <div class="group-label">系统</div>
+      <a href="settings.html">基础设置</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- ═══ 面包屑：给每一页一条回程 ═══ -->
+    <div class="crumbs">
+      <a href="../index.html">首页</a><span>/</span>订单管理
+    </div>
+
+    <div class="page-head">
+      <div>
+        <h1>订单管理</h1>
+        <p class="desc">共 <span data-field="count">128</span> 条记录<span class="demo-flag">示例数据</span></p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="order-export.html">导出</a>
+        <!-- 新建入口必须存在，否则数据无处产生 -->
+        <a class="btn primary" href="order-create.html">＋ 新建订单</a>
+      </div>
+    </div>
+
+    <!-- ═══ 筛选 ═══ -->
+    <form class="filters" method="get" action="order-list.html">
+      <div class="field">
+        <label for="q">关键字</label>
+        <input type="search" id="q" name="q" placeholder="订单号 / 客户名称">
+      </div>
+      <div class="field">
+        <label for="status">订单状态</label>
+        <select id="status" name="status">
+          <option value="">全部</option>
+          <option>草稿</option>
+          <option>待审核</option>
+          <option>已通过</option>
+          <option>已关闭</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="from">创建时间</label>
+        <input type="date" id="from" name="from">
+      </div>
+      <button class="btn primary" type="submit">查询</button>
+      <a class="btn" href="order-list.html">重置</a>
+    </form>
+
+    <!-- ═══ 列表：每个表头都标 data-field ═══ -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-field="orderNo">订单编号</th>
+            <th data-field="customerName">客户名称</th>
+            <th data-field="amount" class="num">结算金额</th>
+            <th data-field="status">状态</th>
+            <th data-field="channel">来源渠道</th>
+            <th data-field="createdAt">创建时间</th>
+            <th class="ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-field="orderNo" class="mono">ORD202610220001</td>
+            <td data-field="customerName">杭州云栖科技</td>
+            <td data-field="amount" class="num">¥ 12,800.00</td>
+            <td data-field="status"><span class="tag warn">待审核</span></td>
+            <td data-field="channel">CRM 同步</td>
+            <td data-field="createdAt">2026-10-22 10:14</td>
+            <td class="ops">
+              <a class="btn text sm" href="order-detail.html">详情</a>
+              <a class="btn text sm" href="order-edit.html">编辑</a>
+            </td>
+          </tr>
+          <tr>
+            <td data-field="orderNo" class="mono">ORD202610210017</td>
+            <td data-field="customerName">北京拾光文化</td>
+            <td data-field="amount" class="num">¥ 4,600.00</td>
+            <td data-field="status"><span class="tag ok">已通过</span></td>
+            <td data-field="channel">手工录入</td>
+            <td data-field="createdAt">2026-10-21 16:02</td>
+            <td class="ops">
+              <a class="btn text sm" href="order-detail.html">详情</a>
+              <a class="btn text sm" href="order-edit.html">编辑</a>
+            </td>
+          </tr>
+          <tr>
+            <td data-field="orderNo" class="mono">ORD202610200033</td>
+            <td data-field="customerName">深圳前海数据</td>
+            <td data-field="amount" class="num">¥ 27,300.00</td>
+            <td data-field="status"><span class="tag neutral">草稿</span></td>
+            <td data-field="channel">手工录入</td>
+            <td data-field="createdAt">2026-10-20 09:31</td>
+            <td class="ops">
+              <a class="btn text sm" href="order-detail.html">详情</a>
+              <a class="btn text sm" href="order-edit.html">编辑</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══ 空态：列表为空时替换上面的 table-wrap ═══
+    <div class="card">
+      <div class="empty">
+        <div class="icon">▤</div>
+        <p>还没有订单</p>
+        <a class="btn primary" href="order-create.html">新建第一条订单</a>
+      </div>
+    </div>
+    ═══ -->
+
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新建订单 · 示例后台</title>
+<link rel="stylesheet" href="../assets/prototype.css">
+</head>
+<!--
+  ═══════════════════════════════════════════════════════════
+  新建 / 编辑页骨架（复制到 pages/ 下使用）
+  ═══════════════════════════════════════════════════════════
+  与列表页的三处关键差异：
+    1. data-view="create"（编辑页写 "edit"）
+    2. <form data-submit-to="..."> 指向保存后要去的页面，必填
+    3. 每个控件标 data-field，且该字段必须在列表或详情页也标了 data-field
+
+  字段来源决定控件形态（不要猜）：
+    用户填写   → input / select / textarea，加 required
+    系统生成   → readonly + 灰色底，并在提示里写明生成规则
+    状态驱动   → select 或只读标签，由动作改变而不是直接编辑
+    计算得出   → readonly，提示里写清公式
+  ═══════════════════════════════════════════════════════════
+-->
+<body data-page="order-create" data-entity="order" data-view="create">
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="dot">P</span> 示例后台</div>
+    <nav>
+      <a href="../index.html">首页</a>
+      <div class="group-label">业务管理</div>
+      <a href="order-list.html" class="active">订单管理</a>
+      <a href="customer-list.html">客户管理</a>
+      <div class="group-label">系统</div>
+      <a href="settings.html">基础设置</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- 面包屑：给出一级回程 -->
+    <div class="crumbs">
+      <a href="../index.html">首页</a><span>/</span>
+      <a href="order-list.html">订单管理</a><span>/</span>新建订单
+    </div>
+
+    <div class="page-head">
+      <div>
+        <h1>新建订单</h1>
+        <p class="desc">带 <span style="color:#d54941">*</span> 为必填项</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>基本信息 <span class="hint">订单编号由系统生成，保存后可见</span></h2>
+
+      <!-- 关键：data-submit-to 必须指向真实存在的页面 -->
+      <form data-submit-to="order-list.html">
+
+        <div class="form-grid">
+
+          <!-- 用户填写 -->
+          <div class="field">
+            <label for="customerName">客户名称<span class="req">*</span></label>
+            <input type="text" id="customerName" name="customerName"
+                   data-field="customerName" required maxlength="50" placeholder="请输入客户全称">
+          </div>
+
+          <!-- 用户选择 -->
+          <div class="field">
+            <label for="channel">来源渠道<span class="req">*</span></label>
+            <select id="channel" name="channel" data-field="channel" required>
+              <option value="">请选择</option>
+              <option>CRM 同步</option>
+              <option>手工录入</option>
+              <option>官网下单</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="amount">订单金额（元）<span class="req">*</span></label>
+            <input type="number" id="amount" name="amount"
+                   data-field="amount" required min="0" step="0.01" placeholder="0.00">
+            <span class="tip">用户填写的原始金额</span>
+          </div>
+
+          <!-- 计算得出：只读 + 公式说明 -->
+          <div class="field">
+            <label for="settleAmount">结算金额（元）</label>
+            <input type="text" id="settleAmount" name="settleAmount"
+                   data-field="settleAmount" readonly value="保存后自动计算">
+            <span class="tip">计算规则：订单金额 × 折扣率 − 优惠，保存时生成</span>
+          </div>
+
+          <!-- 系统生成：只读，明确告知来源 -->
+          <div class="field">
+            <label for="orderNo">订单编号</label>
+            <input type="text" id="orderNo" name="orderNo"
+                   data-field="orderNo" readonly placeholder="保存后自动生成">
+            <span class="tip">规则：ORD + 日期 + 4 位流水，系统生成</span>
+          </div>
+
+          <div class="field">
+            <label for="status">初始状态</label>
+            <input type="text" id="status" name="status"
+                   data-field="status" readonly value="草稿">
+            <span class="tip">新建时固定为草稿，提交后进入待审核</span>
+          </div>
+
+          <div class="field full">
+            <label for="remark">备注</label>
+            <textarea id="remark" name="remark" data-field="remark"
+                      placeholder="选填，最长 200 字" maxlength="200"></textarea>
+          </div>
+
+        </div>
+
+        <!-- 底部操作：取消必须有明确去处 -->
+        <div class="form-actions">
+          <a class="btn" href="order-list.html">取消</a>
+          <button class="btn primary" type="submit">保存</button>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="notice info">
+      保存后回到订单列表，新增记录会高亮显示。若表单字段有增减，
+      记得同步到列表页与详情页的 <code>data-field</code> 标记。
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
